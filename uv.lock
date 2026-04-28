@@ -25,7 +25,7 @@ wheels = [
 ]
 
 [[package]]
-name = "ovl"
+name = "ovl-dev"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

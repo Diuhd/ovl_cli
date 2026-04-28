@@ -6,7 +6,7 @@ import init
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="ovl",
+        prog="ovl_dev",
         description="Make desktop overlays with modern web technology",
         epilog="Visit github for more information",
     )
