@@ -57,6 +57,13 @@ def update_client_build_config_for_static_output(project_dir: str):
                 1,
             )
 
+        if "base:" not in content:
+            content = content.replace(
+                "export default defineConfig({\n",
+                "export default defineConfig({\n  base: './',\n",
+                1,
+            )
+
         config_path.write_text(content)
         return
 

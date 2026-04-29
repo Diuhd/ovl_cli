@@ -4,6 +4,45 @@ import tomllib
 import tempfile
 import shutil
 import threading
+import re
+
+
+ROOT_RELATIVE_ASSET = re.compile(
+    r"(?P<attr>\b(?:href|src)=)(?P<quote>[\"'])(?P<path>/(?!/)[^\"']*)(?P=quote)"
+)
+FAVICON_LINK = re.compile(
+    r"\s*<link\b(?=[^>]*\brel=(?P<quote>[\"'])[^\"']*\b(?:icon|shortcut icon|apple-touch-icon)\b[^\"']*(?P=quote))[^>]*>",
+    re.IGNORECASE,
+)
+
+
+def is_favicon(filename: str):
+    return filename.lower().startswith("favicon.")
+
+
+def remove_favicons(frontend_output: Path):
+    if not frontend_output.exists():
+        return
+
+    for path in frontend_output.rglob("*"):
+        if path.is_file() and is_favicon(path.name):
+            path.unlink()
+
+
+def make_html_asset_paths_relative(entry_file: Path):
+    if not entry_file.exists():
+        return
+
+    content = entry_file.read_text()
+    content = FAVICON_LINK.sub("", content)
+    content = ROOT_RELATIVE_ASSET.sub(
+        lambda match: (
+            f"{match.group('attr')}{match.group('quote')}"
+            f".{match.group('path')}{match.group('quote')}"
+        ),
+        content,
+    )
+    entry_file.write_text(content)
 
 
 def frontend_package_ignore(frontend_output: Path, build_dist: Path):
@@ -20,6 +59,8 @@ def frontend_package_ignore(frontend_output: Path, build_dist: Path):
 
         if "robots.txt" in names:
             ignored.add("robots.txt")
+
+        ignored.update(name for name in names if is_favicon(name))
 
         if build_dist_rel is not None:
             current_rel = Path(directory).resolve().relative_to(frontend_output)
@@ -59,6 +100,7 @@ def main():
     frontend_output = Path(config["build"]["frontend_output"])
     build_dist = Path(config["build"]["build_dist"])
     temp_dir: Path = Path(tempfile.gettempdir()) / "ovl" / project_name
+    remove_favicons(frontend_output)
 
     if temp_dir.exists():
         shutil.rmtree(temp_dir)
@@ -89,6 +131,10 @@ def main():
         thread.start()
     for thread in threads:
         thread.join()
+
+    make_html_asset_paths_relative(
+        temp_dir / config["project"]["entry_dir"] / config["project"]["entry_file"]
+    )
 
     archive_base = build_dist / project_name
     shutil.make_archive(
