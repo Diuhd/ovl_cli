@@ -48,7 +48,12 @@ def main():
         "bun": ["bun", "run", "build"],
     }
 
-    subprocess.run(build_cmds[pkg], check=True)
+    subprocess.run(
+        build_cmds[pkg],
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
     project_name = config["project"]["name"]
     frontend_output = Path(config["build"]["frontend_output"])
@@ -94,7 +99,10 @@ def main():
     )
 
     file_dist = build_dist / Path(f'{project_name}.zip')
-    file_dist.rename(build_dist / Path(f'{project_name}.ovl'))
+    output_file = build_dist / Path(f'{project_name}.ovl')
+    file_dist.rename(output_file)
+
+    print(f"{output_file.name} created in {output_file.parent}")
 
     shutil.rmtree(temp_dir)
 

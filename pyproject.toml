@@ -1,7 +1,7 @@
 [project]
 name = "ovllib_dev"
 version = "0.1.0"
-description = "Add your description here"
+description = "Make desktop overlays using existing web-techs"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
