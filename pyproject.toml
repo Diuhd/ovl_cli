@@ -1,10 +1,10 @@
 [project]
-name = "ovl_dev"
+name = "ovllib_dev"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.10"
 dependencies = ['InquirerPy', 'pydantic', 'tomlkit']
 
 [project.scripts]
-ovl_dev = "ovl.main:main"
+ovllib_dev = "main:main"

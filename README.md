@@ -1,6 +1,6 @@
-# ovl_dev
+# ovllib_dev
 
-`ovl_dev` is a small CLI for creating desktop overlay projects with modern web
+`ovllib_dev` is a small CLI for creating desktop overlay projects with modern web
 tooling. It can scaffold a frontend project, generate an overlay configuration
 file, and package the built static site into a `.ovl` archive.
 
@@ -15,7 +15,7 @@ file, and package the built static site into a `.ovl` archive.
 
 ## Requirements
 
-- Python 3.14 or newer
+- Python 3.10 or newer
 - `uv` for local development
 - One supported JavaScript package manager:
   - `npm`
@@ -28,16 +28,9 @@ build commands.
 
 ## Installation
 
-Clone the repository and install the Python dependencies:
-
-```sh
-uv sync
-```
-
-For local development, run the CLI through Python:
-
-```sh
-uv run python main.py --help
+```bash
+pip install ovllib_dev
+ovllib_dev --version
 ```
 
 ## Usage
@@ -45,18 +38,17 @@ uv run python main.py --help
 ### Create a new overlay project
 
 ```sh
-uv run python main.py init
+ovllib_dev init
 ```
 
 The setup flow asks for:
 
 - Project name
-- Application ID, such as `com.example.overlay`
 - Package manager
 - Frontend framework
 - Frontend language
 
-After confirmation, `ovl_dev` creates the frontend project and writes an
+After confirmation, `ovllib_dev` creates the frontend project and writes an
 `ovl_config.toml` file into the generated project directory.
 
 ### Build an overlay package
@@ -64,7 +56,7 @@ After confirmation, `ovl_dev` creates the frontend project and writes an
 From inside a generated overlay project, run:
 
 ```sh
-uv run python /path/to/ovl_dev/main.py build
+uv run python /path/to/ovllib_dev/main.py build
 ```
 
 The build command:
@@ -89,7 +81,6 @@ Generated projects include an `ovl_config.toml` file like this:
 
 [project]
 name = "my-overlay"
-app_id = "com.example.overlay"
 entry_dir = "web"
 entry_file = "index.html"
 
@@ -98,7 +89,6 @@ width = 600
 height = 400
 x = 40
 y = 40
-always_on_display = true
 movable = true
 move_element = ""
 
@@ -112,7 +102,6 @@ build_dist = "build/ovl"
 ### Project settings
 
 - `name`: Project and output package name
-- `app_id`: Reverse-DNS application identifier
 - `entry_dir`: Directory inside the package that contains the frontend files
 - `entry_file`: HTML file used as the overlay entry point
 
@@ -120,7 +109,6 @@ build_dist = "build/ovl"
 
 - `width` and `height`: Initial overlay size
 - `x` and `y`: Initial overlay position
-- `always_on_display`: Whether the overlay should stay visible
 - `movable`: Whether the overlay can be moved
 - `move_element`: Optional selector or element identifier used for dragging
 
